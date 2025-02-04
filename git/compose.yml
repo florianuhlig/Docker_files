@@ -1,36 +1,58 @@
 services:
   app.gitea:
     image: docker.io/gitea/gitea:1.23.1
-    container_name: app.gitea
-    hostname: app.gitea
+    container_name: ${app_name}
+    hostname: ${app_name}
     environment:
+      ### User mapping
       - USER_UID=1000
       - USER_GID=1000
-    restart: always
+      ### Server settings
+      - GITEA__server__DOMAIN=${server_domain}
+      - GITEA__server__SSH_DOMAIN=${server_domain}
+      - GITEA__server__ROOT_URL=${server_root_url}
+      ### Databse settings
+      - GITEA__database__PATH=${db_path}
+      - GITEA__database__DB_TYPE=${db_type}
+      - GITEA__database__DB_HOST=${db_host}
+      - GITEA__database__DB_NAME=${db_name}
+      - GITEA__database__DB_USER=${db_user}
+      ### Mail settings
+      - GITEA__mailer__ENABLED=true
+      - GITEA__mailer__SMTP_ADDR=${smtp_server}
+      - GITEA__mailer__SMTP_PORT=${smtp_port}
+      - GITEA__mailer__FROM=${smtp_from}
+      - GITEA__mailer__USER=${smtp_user}
+      - GITEA__mailer__PASSWD=${smtp_password}
+      ### Service settings
+      - GITEA__service__NO_REPLY_ADDRESS=${service_no_reply_address}
+
+
+    restart: unless-stopped
     volumes:
       - data:/data
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-#    ports:
-#      - "3000:3000"
-#      - "2222:2222"
+    ports:
+#      - "3000:3000"  # for web
+      - "2222:2222"   # for ssh
     networks:
       net:
-        ipv4_address: 192.168.0.4
+        ipv4_address: ${app_ipv4}
 
-  runner01.gitea:
-    container_name: runner01.gitea
-    hostname: runner01.gitea
-    image: gitea/act_runner
-    environment:
-      GITEA_INSTANCE_URL: "https://git.fuhlig.de"
-      GITEA_RUNNER_REGISTRATION_TOKEN: "DYP8I0txtDjrNERqW6L7ZeDqXc1FGYsm61GAV81R"
-    volumes:
-      - runner01:/data
-      - /var/run/docker.sock:/var/run/docker.sock
-    networks:
-      net:
-        ipv4_address: 192.168.0.253
+#  runner01.gitea:
+#    container_name: runner01.gitea
+#    hostname: runner01.gitea
+#    image: gitea/act_runner
+#    environment:
+#      GITEA_INSTANCE_URL: "https://git.fuhlig.de"
+#      GITEA_RUNNER_REGISTRATION_TOKEN: "DYP8I0txtDjrNERqW6L7ZeDqXc1FGYsm61GAV81R"
+#    volumes:
+#      - runner01:/data
+#      - /var/run/docker.sock:/var/run/docker.sock
+#    networks:
+#      net:
+#        ipv4_address: 192.168.0.253
 
 volumes:
   data:
