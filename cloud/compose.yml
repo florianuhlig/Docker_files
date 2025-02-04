@@ -23,6 +23,27 @@ services:
       - MYSQL_PASSWORD=${db_password}
       - MYSQL_HOST=${db_name}
       - REDIS_HOST=${redis_name}
+
+      - SMTP_HOST=${smtp_host}
+      - SMTP_SECURE=ssl
+      - SMTP_PORT=465
+      - SMTP_AUTHTYPE=LOGIN
+      - SMTP_NAME=${smtp_username}
+      - SMTP_PASSWORD=${smtp_password}
+      - MAIL_FROM_ADDRESS=${smtp_name}
+      - MAIL_DOMAIN=${smtp_domain}
+
+      - NEXTCLOUD_TRUSTED_DOMAINS=${cloud_trusted_domains}
+      - NEXTCLOUD_INIT_HTACCESS="occ maintenance:update:htaccess"
+      - NEXTCLOUD_UPDATE=1
+
+      - APACHE_DISABLE_REWRITE_IP=1
+      - TRUSTED_PROXIES=${cloud_proxies}
+      - OVERWRITEPROTOCOL=https
+      - OVERWRITECLIURL=${cloud_overwritecliurl}
+
+      - PHP_MEMORY_LIMIT=4096m
+      - PHP_UPLOAD_LIMIT=1024m
     networks: 
       net:
         ipv4_address: 192.168.0.10
