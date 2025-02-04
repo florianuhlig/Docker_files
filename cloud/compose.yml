@@ -1,0 +1,71 @@
+services:
+  app.cloud:
+    image: nextcloud
+    container_name: ${app.name}
+    hostname: ${app.name}
+    restart: ${restart_mode}
+    depends_on:
+      - db.cloud
+      - redis.cloud
+#    ports:
+#      - 8081:80
+    volumes:
+      - data:/var/www/html
+#      - ./custom_apps:/var/www/html/custom_apps
+#      - ./config:/var/www/html/config
+#      - ./data:/var/www/html/data
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=${timezone}
+      - MYSQL_DATABASE=${db_database}
+      - MYSQL_USER=${db_user}
+      - MYSQL_PASSWORD=${db_password}
+      - MYSQL_HOST=${db_name}
+      - REDIS_HOST=${redis_name}
+    networks: 
+      net:
+        ipv4_address: 192.168.0.10
+
+  db.cloud:
+    image: mariadb
+    container_name: nextcloud-db
+    restart: ${restart_mode}
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    volumes:
+      - db:/var/lib/mysql
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=${timezone}
+      - MYSQL_RANDOM_ROOT_PASSWORD=true
+      - MYSQL_PASSWORD=${db_password}
+      - MYSQL_DATABASE=${db_database}
+      - MYSQL_USER=${db_user}
+    networks: 
+      net:
+        ipv4_address: ${db_ipv4}
+
+  redis.cloud:
+    container_name: ${redis_name}
+    hostname: ${redis_name}
+    image: redis:alpine
+    restart: ${restart_mode}
+    volumes:
+      - redis:/data  
+    networks: 
+      net:
+        ipv4_address: ${redis_ipv4}
+
+volumes:
+  data:
+    name: cloud.data
+  db:
+    name: cloud.db
+  redis:
+    name: cloud.redis
+
+networks:
+  net:
+    name: ${network_name}
+    external: true
