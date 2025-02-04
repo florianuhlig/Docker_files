@@ -5,25 +5,30 @@ services:
     hostname: ${app_name}
     restart: ${restart_mode}
     depends_on:
-      - db.cloud
-      - redis.cloud
+      db.cloud:
+        condition: service_healthy
+      redis.cloud:
+        condition: service_healthy
 #    ports:
-#      - 8081:80
+#      - 80:80
     volumes:
       - data:/var/www/html
-#      - ./custom_apps:/var/www/html/custom_apps
-#      - ./config:/var/www/html/config
-#      - ./data:/var/www/html/data
+      - ./post-installation:/docker-entrypoint-hooks.d/post-installation
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=${timezone}
+      ### Database
       - MYSQL_DATABASE=${db_database}
       - MYSQL_USER=${db_user}
       - MYSQL_PASSWORD=${db_password}
       - MYSQL_HOST=${db_name}
+      ### Redis
       - REDIS_HOST=${redis_name}
-
+      ### Admin user
+      - NEXTCLOUD_ADMIN_USER=${cloud_admin_user}
+      - NEXTCLOUD_ADMIN_PASSWORD=${cloud_admin_password}
+      ### SMTP
       - SMTP_HOST=${smtp_host}
       - SMTP_SECURE=ssl
       - SMTP_PORT=465
@@ -32,21 +37,19 @@ services:
       - SMTP_PASSWORD=${smtp_password}
       - MAIL_FROM_ADDRESS=${smtp_name}
       - MAIL_DOMAIN=${smtp_domain}
-
+      ### Server settings
       - NEXTCLOUD_TRUSTED_DOMAINS=${cloud_trusted_domains}
       - NEXTCLOUD_INIT_HTACCESS="occ maintenance:update:htaccess"
       - NEXTCLOUD_UPDATE=1
-
       - APACHE_DISABLE_REWRITE_IP=1
       - TRUSTED_PROXIES=${cloud_proxies}
       - OVERWRITEPROTOCOL=https
       - OVERWRITECLIURL=${cloud_overwritecliurl}
-
       - PHP_MEMORY_LIMIT=4096m
       - PHP_UPLOAD_LIMIT=1024m
     networks: 
       net:
-        ipv4_address: 192.168.0.10
+        ipv4_address: ${app_ipv4}
 
   db.cloud:
     image: mariadb:10.6 
@@ -63,6 +66,11 @@ services:
       - MYSQL_PASSWORD=${db_password}
       - MYSQL_DATABASE=${db_database}
       - MYSQL_USER=${db_user}
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+      interval: 30s
     networks: 
       net:
         ipv4_address: ${db_ipv4}
@@ -73,7 +81,12 @@ services:
     image: redis:alpine
     restart: ${restart_mode}
     volumes:
-      - redis:/data  
+      - redis:/data
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 30s
+      timeout: 20s
+      retries: 10  
     networks: 
       net:
         ipv4_address: ${redis_ipv4}
