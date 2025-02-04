@@ -1,0 +1,29 @@
+services:
+  app.wiki:
+    container_name: app.wiki
+    hostname: app.wiki
+    image: ghcr.io/requarks/wiki:latest
+    environment:
+      DB_TYPE: postgres
+      DB_HOST: ${db_host}
+      DB_PORT: 5432
+      DB_USER: ${db_username}
+      DB_PASS: ${db_password}
+      DB_NAME: ${db_databse}
+    restart: unless-stopped
+    #ports:
+    #  - "80:3000"
+    volumes:
+      - data:/wiki/data/content
+    networks:
+      net:
+        ipv4_address: 192.168.0.12
+
+volumes:
+  data:
+    name: wiki.data
+
+networks:
+  net:
+    name: docker_public
+    external: true

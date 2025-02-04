@@ -1,0 +1,33 @@
+services:
+  app.vault:
+    container_name: app.vault
+    hostname: app.vault
+    image: vaultwarden/server:latest
+    environment:
+      - DOMAIN=https://vault.fuhlig.de
+      - SIGNUPS_ALLOWED=false
+      - ADMIN_TOKEN=${ADMIN_TOKEN}
+      - ORG_CREATION_USERS=${ORG_CREATION_USERS}
+      - SMTP_HOST=smtp.strato.de
+      - SMTP_SECURITY=force_tls
+      - SMTP_FROM=${SMTP_FROM}
+      - SMTP_FROM_NAME=${SMTP_FROM_NAME}
+      - SMTP_USERNAME=${SMTP_USERNAME}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+    volumes:
+      - vw-data:/data
+    restart: always
+    #ports:
+      #- 80:80
+    networks:
+      net:
+        ipv4_address: 192.168.0.3
+
+volumes:
+  vw-data:
+    name: vault.data
+
+networks:
+  net:
+    name: docker_public
+    external: true

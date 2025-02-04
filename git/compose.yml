@@ -1,0 +1,44 @@
+services:
+  app.gitea:
+    image: docker.io/gitea/gitea:1.23.1
+    container_name: app.gitea
+    hostname: app.gitea
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+    restart: always
+    volumes:
+      - data:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+#    ports:
+#      - "3000:3000"
+#      - "2222:2222"
+    networks:
+      net:
+        ipv4_address: 192.168.0.4
+
+  runner01.gitea:
+    container_name: runner01.gitea
+    hostname: runner01.gitea
+    image: gitea/act_runner
+    environment:
+      GITEA_INSTANCE_URL: "https://git.fuhlig.de"
+      GITEA_RUNNER_REGISTRATION_TOKEN: "DYP8I0txtDjrNERqW6L7ZeDqXc1FGYsm61GAV81R"
+    volumes:
+      - runner01:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      net:
+        ipv4_address: 192.168.0.253
+
+volumes:
+  data:
+    name: gitea.data
+  runner01:
+    name: gitea.runner01
+
+networks:
+  net:
+    name: docker_public
+    external: true

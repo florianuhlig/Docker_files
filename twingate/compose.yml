@@ -1,0 +1,39 @@
+services:
+  srv01-con01:
+    container_name: srv01-con01
+    restart: always
+    image: twingate/connector:latest
+    environment:
+      - TWINGATE_LABEL_HOSTNAME="srv01-con01"
+      - TWINGATE_LABEL_DEPLOYED_BY="docker"
+      - TWINGATE_NETWORK=${twingate_network}
+      - TWINGATE_ACCESS_TOKEN=${con01_access_token}
+      - TWINGATE_REFRESH_TOKEN=${con01_refresh_token}
+      - TWINGATE_LOG_LEVEL=7
+    sysctls:
+      net.ipv4.ping_group_range: "0 2147483647"
+    networks:
+      net:
+        ipv4_address: 192.168.0.250
+
+  srv01-con02:
+    container_name: srv01-con02
+    restart: always
+    image: twingate/connector:latest
+    environment:
+      - TWINGATE_LABEL_HOSTNAME="srv01-con02"
+      - TWINGATE_LABEL_DEPLOYED_BY="docker"
+      - TWINGATE_NETWORK=${twingate_network}
+      - TWINGATE_ACCESS_TOKEN=${con02_access_token}
+      - TWINGATE_REFRESH_TOKEN=${con02_refresh_token}
+      - TWINGATE_LOG_LEVEL=7
+    sysctls:
+      net.ipv4.ping_group_range: "0 2147483647"
+    networks:
+      net:
+        ipv4_address: 192.168.0.251
+
+networks:
+  net:
+    name: docker_public
+    external: true

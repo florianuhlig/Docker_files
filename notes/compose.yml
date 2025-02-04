@@ -1,0 +1,40 @@
+services:
+  app.notes:
+    container_name: app.notes
+    hostname: app.notes
+    image: joplin/server:latest
+    #depends_on:
+    #  - db.notes
+    #ports:
+      #- "22300:22300"
+    restart: unless-stopped
+    environment:
+      - APP_PORT=22300
+      - APP_BASE_URL=https://notes.fuhlig.de
+      - DB_CLIENT=pg
+      - POSTGRES_PASSWORD=${pg_password}
+      - POSTGRES_DATABASE=${pg_database}
+      - POSTGRES_USER=${pg_username}
+      - POSTGRES_PORT=5432
+      - POSTGRES_HOST=${pg_host}
+      - MAILER_ENABLED=1
+      - MAILER_HOST=smtp.strato.de
+      - MAILER_PORT=465
+      - MAILER_SECURE=1
+      - MAILER_AUTH_USER=${smtp_username}
+      - MAILER_AUTH_PASSWORD=${smtp_password}
+      - MAILER_NOREPLY_NAME=Notes
+      - MAILER_NOREPLY_EMAIL=Notes@fuhlig.de
+    healthcheck:
+      test: ["CMD-SHELL", "curl https://notes.fuhlig.de/api/ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+    networks:
+      net:
+        ipv4_address: 192.168.0.11
+
+networks:
+  net:
+    name: docker_public
+    external: true
