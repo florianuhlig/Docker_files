@@ -1,10 +1,11 @@
 services:
   srv01-con01:
-    container_name: srv01-con01
+    container_name: ${con01_name}
+    hostname: ${con01_name}
     restart: always
     image: twingate/connector:latest
     environment:
-      - TWINGATE_LABEL_HOSTNAME="srv01-con01"
+      - TWINGATE_LABEL_HOSTNAME=${con01_label_hostname}
       - TWINGATE_LABEL_DEPLOYED_BY="docker"
       - TWINGATE_NETWORK=${twingate_network}
       - TWINGATE_ACCESS_TOKEN=${con01_access_token}
@@ -14,14 +15,15 @@ services:
       net.ipv4.ping_group_range: "0 2147483647"
     networks:
       net:
-        ipv4_address: 192.168.0.250
+        ipv4_address: ${con01_ipv4}
 
   srv01-con02:
-    container_name: srv01-con02
+    container_name: ${con02_name}
+    hostname: ${con02_name}
     restart: always
     image: twingate/connector:latest
     environment:
-      - TWINGATE_LABEL_HOSTNAME="srv01-con02"
+      - TWINGATE_LABEL_HOSTNAME=${con02_label_hostname}
       - TWINGATE_LABEL_DEPLOYED_BY="docker"
       - TWINGATE_NETWORK=${twingate_network}
       - TWINGATE_ACCESS_TOKEN=${con02_access_token}
@@ -31,7 +33,7 @@ services:
       net.ipv4.ping_group_range: "0 2147483647"
     networks:
       net:
-        ipv4_address: 192.168.0.251
+        ipv4_address: ${con02_ipv4}
 
 networks:
   net:
