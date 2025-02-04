@@ -28,7 +28,7 @@ services:
         ipv4_address: 192.168.0.10
 
   db.cloud:
-    image: mariadb
+    image: mariadb:10.6 
     container_name: nextcloud-db
     restart: ${restart_mode}
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
