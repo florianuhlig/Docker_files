@@ -1,7 +1,7 @@
 services:
   app.wiki:
-    container_name: app.wiki
-    hostname: app.wiki
+    container_name: ${app_name}
+    hostname: ${app_name}
     image: ghcr.io/requarks/wiki:latest
     environment:
       DB_TYPE: postgres
@@ -14,14 +14,39 @@ services:
     #ports:
     #  - "80:3000"
     volumes:
-      - data:/wiki/data/content
+      - app_data:/wiki/data/content
     networks:
       net:
-        ipv4_address: 192.168.0.12
+        ipv4_address: ${app_ipv4}
+    depends_on:
+      db.wiki:
+        condition: service_healthy
+
+  db.wiki:
+    container_name: ${db_name}
+    hostname: ${db_name}
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ${db_password}
+      POSTGRES_USER: ${db_username}
+      POSTGRES_DATABASE: ${db_databse}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      net:
+        ipv4_address: ${db_ipv4}
 
 volumes:
-  data:
-    name: wiki.data
+  app_data:
+    name: wiki.app.data
+  db_data:
+    name: wiki.db.data
 
 networks:
   net:
