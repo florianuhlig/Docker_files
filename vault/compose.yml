@@ -1,14 +1,14 @@
 services:
   app.vault:
-    container_name: app.vault
-    hostname: app.vault
+    container_name: ${app_name}
+    hostname: ${app_name}
     image: vaultwarden/server:latest
     environment:
-      - DOMAIN=https://vault.fuhlig.de
+      - DOMAIN=${DOMAIN}
       - SIGNUPS_ALLOWED=false
       - ADMIN_TOKEN=${ADMIN_TOKEN}
       - ORG_CREATION_USERS=${ORG_CREATION_USERS}
-      - SMTP_HOST=smtp.strato.de
+      - SMTP_HOST=${SMTP_HOST}
       - SMTP_SECURITY=force_tls
       - SMTP_FROM=${SMTP_FROM}
       - SMTP_FROM_NAME=${SMTP_FROM_NAME}
@@ -21,7 +21,7 @@ services:
       #- 80:80
     networks:
       net:
-        ipv4_address: 192.168.0.3
+        ipv4_address: ${app_ipv4}
 
 volumes:
   vw-data:
