@@ -1,0 +1,30 @@
+services:
+  app.npm:
+    container_name: app.npm
+    hostname: app.npm
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: unless-stopped
+    ports:
+      - '80:80' # Public HTTP Port
+      - '443:443' # Public HTTPS Port
+    volumes:
+      - data:/data
+      - certs:/etc/letsencrypt
+    environment:
+      INITIAL_ADMIN_EMAIL: ${admin_email} #admin@localhost
+      INITIAL_ADMIN_PASSWORD: ${admin_password} #test1234
+    networks:
+      net:
+        ipv4_address: 192.168.0.2
+
+volumes:
+  data:
+    name: npm.data
+  certs:
+    name: npm.certs
+
+networks:
+  net:
+    name: docker_public
+    external: true
+
