@@ -1,0 +1,23 @@
+services:
+  app.monitoring:
+    image: louislam/uptime-kuma:latest
+    container_name: ${app_name}
+    hostname: ${app_name}
+    volumes:
+      - data:/app/data
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+#    ports:
+#      - 3001:3001  # <Host Port>:<Container Port>
+    restart: ${restart_mode}
+    networks:
+      net:
+        ipv4_address: ${app_ipv4}
+
+volumes:
+  data:
+    name: ${app_volume_name}
+
+networks:
+  net:
+    name: ${network_name}
+    external: true

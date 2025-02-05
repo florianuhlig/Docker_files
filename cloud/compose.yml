@@ -47,13 +47,14 @@ services:
       - OVERWRITECLIURL=${cloud_overwritecliurl}
       - PHP_MEMORY_LIMIT=4096m
       - PHP_UPLOAD_LIMIT=1024m
-    networks: 
+    networks:
       net:
         ipv4_address: ${app_ipv4}
 
   db.cloud:
     image: mariadb:10.6 
-    container_name: nextcloud-db
+    container_name: ${db_name}
+    hostname: ${db_name}
     restart: ${restart_mode}
     command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
     volumes:
