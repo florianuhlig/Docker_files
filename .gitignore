@@ -1,6 +1,2 @@
 *.env
-*/*.env
-.env
-*/.env
-
-.gitignore
+git.sh

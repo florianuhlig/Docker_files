@@ -22,7 +22,7 @@ services:
       - GITEA__mailer__SMTP_ADDR=${smtp_server}
       - GITEA__mailer__SMTP_PORT=${smtp_port}
       - GITEA__mailer__FROM=${smtp_from}
-      - GITEA__mailer__USER=${smtp_user}
+      - GITEA__mailer__USER=${smtp_username}
       - GITEA__mailer__PASSWD=${smtp_password}
       ### Service settings
       - GITEA__service__NO_REPLY_ADDRESS=${service_no_reply_address}
@@ -41,18 +41,18 @@ services:
         ipv4_address: ${app_ipv4}
 
 #  runner01.gitea:
-#    container_name: runner01.gitea
-#    hostname: runner01.gitea
+#    container_name: ${runner01_name}
+#    hostname: ${runner01_name}
 #    image: gitea/act_runner
 #    environment:
-#      GITEA_INSTANCE_URL: "https://git.fuhlig.de"
-#      GITEA_RUNNER_REGISTRATION_TOKEN: "DYP8I0txtDjrNERqW6L7ZeDqXc1FGYsm61GAV81R"
+#      GITEA_INSTANCE_URL: ${runner_instance_url}
+#      GITEA_RUNNER_REGISTRATION_TOKEN: ${runner01_token}
 #    volumes:
 #      - runner01:/data
 #      - /var/run/docker.sock:/var/run/docker.sock
 #    networks:
 #      net:
-#        ipv4_address: 192.168.0.253
+#        ipv4_address: ${runner01_ipv4}
 
 volumes:
   data:
@@ -62,5 +62,5 @@ volumes:
 
 networks:
   net:
-    name: docker_public
+    name: ${network}
     external: true
