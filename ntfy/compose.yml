@@ -6,28 +6,27 @@ services:
     command:
       - serve
     environment:
-      - TZ=Europe/Berlin    # optional: Change to your desired timezone
+      - TZ= Europe/Berlin    # optional: Change to your desired timezone
       - NTFY_BASE_URL=${app_base_url}
+      - NTFY_AUTH_FILE=/var/ntfy/user.db
       - NTFY_AUTH_DEFAULT_ACCESS=deny-all
       - NTFY_BEHIND_PROXY=true
-      - NTFY_ENABLE_LOGIN=true
+      - NTFY_ENABLE_LOGIN=false
       - NTFY_UPSTREAM_BASE_URL=https://ntfy.sh
-    user: 1000:1000 # optional: Set custom user/group or uid/gid
+    user: 0:0 # optional: Set custom user/group or uid/gid
     volumes:
-      - cache:/var/cache/ntfy
-      - ntfy:/etc/ntfy
+      - lib:/var/ntfy/
+#      - ./ntfy:/etc/ntfy
 #    ports:
 #      - 80:80
     restart: ${restart_mode}
     networks:
       net:
         ipv4_address: ${app_ipv4}
-    
+
 volumes:
-  ntfy:
-    name: ntfy.data
-  cache:
-    name: ntfy.cache
+  lib:
+    name: ntfy.lib
 
 networks:
   net:
