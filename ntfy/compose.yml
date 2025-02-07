@@ -12,7 +12,7 @@ services:
       - NTFY_AUTH_DEFAULT_ACCESS=deny-all
       - NTFY_BEHIND_PROXY=true
       - NTFY_ENABLE_LOGIN=false
-      - NTFY_UPSTREAM_BASE_URL=https://ntfy.sh
+      - NTFY_UPSTREAM_BASE_URL=${upstream_url}
     user: 0:0 # optional: Set custom user/group or uid/gid
     volumes:
       - lib:/var/ntfy/

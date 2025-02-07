@@ -1,7 +1,7 @@
 services:
   mc:
-    container_name: minecraft-server
-    hostname: minecraft-server
+    container_name: ${app_name}
+    hostname: ${app_name}
     image: itzg/minecraft-server
     environment:
       TYPE: "VANILLA"
@@ -9,14 +9,18 @@ services:
     ports:
       - "25000:25000"
     volumes:
-      - /data/docker_data/minecraft/data:/data
+      - data:/data
+#      - /data/docker_data/minecraft/data:/data
     stdin_open: true
     tty: true
     restart: unless-stopped
     networks:
       net:
-        ipv4_address: 192.168.0.252
+        ipv4_address: ${app_ipv4}
 
+volumes:
+  data:
+    name: minecraft.data
 
 networks:
   net:
