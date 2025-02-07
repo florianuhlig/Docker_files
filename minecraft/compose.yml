@@ -10,7 +10,6 @@ services:
       - "25000:25000"
     volumes:
       - data:/data
-#      - /data/docker_data/minecraft/data:/data
     stdin_open: true
     tty: true
     restart: unless-stopped
